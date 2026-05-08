@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Velocity Calculator — Adan</title>
+    <link rel="icon" type="image/x-icon" href="../images/Velocity-calculator.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">Adan's Velocity Calculator</div>
+        <div class="subtitle">Distance ÷ Time → Velocity</div>
+    </header>
+
+    <main class="app">
+        <section class="card form-card" aria-labelledby="calc-title">
+            <h2 id="calc-title">Calculate Velocity</h2>
+
+            <form id="velocity-form" class="form-grid" autocomplete="off">
+                <div class="field">
+                    <label for="distance">Distance</label>
+                    <div class="input-row">
+                        <input id="distance" name="distance" type="number" step="any" inputmode="decimal"
+                            placeholder="Enter distance" required>
+                        <select id="distance-unit" aria-label="Distance unit">
+                            <option value="m">meters (m)</option>
+                            <option value="km">kilometres (km)</option>
+                            <option value="mi">miles (mi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="time">Time</label>
+                    <div class="input-row">
+                        <input id="time" name="time" type="number" step="any" inputmode="decimal"
+                            placeholder="Enter time" required>
+                        <select id="time-unit" aria-label="Time unit">
+                            <option value="s">seconds (s)</option>
+                            <option value="min">minutes (min)</option>
+                            <option value="h">hours (h)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button type="submit" id="calc-btn" class="btn primary">Calculate</button>
+                    <button type="button" id="reset-btn" class="btn ghost">Reset (R)</button>
+                    <button type="button" id="copy-btn" class="btn ghost" title="Copy last result">Copy</button>
+                </div>
+
+                <div id="message" class="message" role="status" aria-live="polite"></div>
+            </form>
+        </section>
+
+        <section class="card result-card" aria-live="polite">
+            <h3>Result</h3>
+            <div class="result-display">
+                <div class="result-row">
+                    <div class="label">m/s</div>
+                    <div class="value" id="v-ms">—</div>
+                </div>
+                <div class="result-row">
+                    <div class="label">km/h</div>
+                    <div class="value" id="v-kmh">—</div>
+                </div>
+                <div class="result-row">
+                    <div class="label">mph</div>
+                    <div class="value" id="v-mph">—</div>
+                </div>
+            </div>
+
+            <div class="mini-progress" aria-hidden="true">
+                <div class="bar" id="progress-bar"></div>
+            </div>
+
+            <div class="history">
+                <div class="history-header">
+                    <h4>History</h4>
+                    <div class="history-actions">
+                        <button id="clear-history" class="btn small ghost">Clear</button>
+                    </div>
+                </div>
+                <ul id="history-list" class="history-list" aria-live="polite"></ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div>© 2026 Adan — Velocity Calculator · Built with HTML/CSS/JS</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

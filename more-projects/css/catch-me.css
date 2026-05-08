@@ -1,0 +1,74 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../assets/catch-me.jpg");
+  /* ✅ local image path */
+  background-size: cover;
+  /* 🔑 image fills entire screen */
+  background-position: center;
+  /* center the image */
+  background-repeat: no-repeat;
+  /* no repeat */
+  background-attachment: fixed;
+  /* optional: keeps image fixed on scroll */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+/* body {
+            margin: 0;
+            height: 100vh;
+            background-image: url("/assets/catch-me.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        } */
+
+.box {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(90deg, #16151c, #8695a3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+  user-select: none;
+  cursor: grab;
+  font-size: 1rem;
+}
+
+.box:hover {
+  transform: scale(1.05);
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 600px) {
+  .box {
+    width: 90px;
+    height: 90px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .box {
+    width: 70px;
+    height: 70px;
+    font-size: 0.75rem;
+  }
+}

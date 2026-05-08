@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="../images/color-piker.png">
+    <title>Custom Color Picker</title>
+    <style>
+        :root {
+            --bg: #f3f7fb;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --accent: #0ea5a4;
+            --shadow: 0 6px 18px rgba(12, 74, 110, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        /* 
+        body {
+            margin: 20px;
+            background: linear-gradient(180deg, #e6f2f7 0%, var(--bg) 100%);
+            color: #033047;
+        } */
+        body {
+            background: linear-gradient(135deg, #050505, #0a0f27, #0b0018);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            color: #E5E5E5;
+            padding: 40px;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .wrap {
+            max-width: 920px;
+            margin: 20px auto;
+            padding: 18px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px
+        }
+
+        .title h2 {
+            margin: 0;
+            font-size: 18px
+        }
+
+        /* left: canvas area */
+        .picker-main {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .sv-area {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 260px
+        }
+
+        .sv-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair
+        }
+
+        .hue-row {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .hue,
+        .alpha {
+            height: 18px;
+            border-radius: 8px;
+            flex: 1;
+            appearance: none;
+            border: 0;
+            cursor: pointer
+        }
+
+        input[type="range"] {
+            width: 100%
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .swatches {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .swatch {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(2, 6, 23, 0.06)
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-wrap: break-word;
+        }
+
+
+        .preview {
+            height: 110px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600
+        }
+
+        .inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+        }
+
+        .inputs input {
+            width: 100%;
+        }
+
+
+        .btn {
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            border: 0;
+            cursor: pointer
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .small {
+            font-size: 13px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid #e6eef5;
+            background: #fff
+        }
+
+        .footer {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        @media(max-width:880px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h2 style="text-align: center;">Adan'sCustom color piker</h2>
+    </section>
+    <div class="wrap">
+        <div class="card picker-main">
+            <div class="title">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 11.5a3.5 3.5 0 0 1-4.5 3.38L7 7.38 9.62 4 20.5 14.88A3.5 3.5 0 0 1 21 11.5z"
+                        fill="#0ea5a4" />
+                </svg>
+                <h2>Custom Color Picker</h2>
+            </div>
+
+            <div class="sv-area card" id="svArea">
+                <canvas id="svCanvas" class="sv-canvas"></canvas>
+            </div>
+
+            <div>
+                <div class="hue-row">
+                    <input id="hue" type="range" class="hue" min="0" max="360" value="200" />
+                </div>
+                <div style="display:flex;gap:10px;margin-top:8px;align-items:center">
+                    <input id="alpha" type="range" class="alpha" min="0" max="100" value="100" />
+                    <div class="muted">Alpha: <span id="alphaVal">100%</span></div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;justify-content:space-between">
+                <div class="swatches" id="presets"></div>
+                <div style="display:flex;gap:8px">
+                    <button class="small" id="eyedropBtn">EyeDropper</button>
+                    <button class="small" id="randomBtn">Random</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card info">
+            <div class="preview" id="preview">#6699CC</div>
+
+            <div class="inputs">
+                <input id="hex" placeholder="#rrggbb" />
+                <input id="rgba" placeholder="rgba(..)" />
+                <input id="hsv" placeholder="hsv(...)" style="grid-column:1 / -1" />
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center">
+                <button id="copyBtn" class="btn">Copy HEX</button>
+                <div class="muted">Copied: <span id="copied">No</span></div>
+            </div>
+
+            <div class="footer muted">
+                Tips: Drag inside the square to change saturation/value. Use Hue slider for color wheel. EyeDropper
+                works in secure contexts (https) and supported browsers.
+            </div>
+        </div>
+        <div>
+            <a href="/portfolio.html" style="color:aqua; text-decoration: none;">⬅ Back to Main Page</a>
+        </div>
+    </div>
+
+    <script>
+        /* Utility: HSV <-> RGB <-> HEX conversions */
+        function hsvToRgb(h, s, v) {
+            s /= 100; v /= 100;
+            let c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+            let r = 0, g = 0, b = 0;
+            if (h < 60) { r = c; g = x; b = 0 }
+            else if (h < 120) { r = x; g = c; b = 0 }
+            else if (h < 180) { r = 0; g = c; b = x }
+            else if (h < 240) { r = 0; g = x; b = c }
+            else if (h < 300) { r = x; g = 0; b = c }
+            else { r = c; g = 0; b = x }
+            return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+        }
+        function rgbToHex(r, g, b) { return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+        function hexToRgb(hex) {
+            hex = hex.replace('#', ''); if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            if (hex.length !== 6) return null;
+            return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+        }
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            let mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+            let h = 0;
+            if (d === 0) h = 0;
+            else if (mx === r) h = 60 * ((g - b) / d % 6);
+            else if (mx === g) h = 60 * ((b - r) / d + 2);
+            else h = 60 * ((r - g) / d + 4);
+            if (h < 0) h += 360;
+            let v = mx, s = mx === 0 ? 0 : (d / mx);
+            return [Math.round(h), Math.round(s * 100), Math.round(v * 100)];
+        }
+
+        /* UI elements */
+        const svCanvas = document.getElementById('svCanvas');
+        const svCtx = svCanvas.getContext('2d');
+        const hueEl = document.getElementById('hue');
+        const alphaEl = document.getElementById('alpha');
+        const preview = document.getElementById('preview');
+        const hexInput = document.getElementById('hex');
+        const rgbaInput = document.getElementById('rgba');
+        const hsvInput = document.getElementById('hsv');
+        const presets = document.getElementById('presets');
+        const copyBtn = document.getElementById('copyBtn');
+        const copiedSpan = document.getElementById('copied');
+        const alphaVal = document.getElementById('alphaVal');
+        const eyedropBtn = document.getElementById('eyedropBtn');
+        const randomBtn = document.getElementById('randomBtn');
+
+        /* state */
+        let state = { h: 200, s: 70, v: 60, a: 100 };
+
+        /* responsive canvas size */
+        function fitCanvas() {
+            const rect = svCanvas.parentElement.getBoundingClientRect();
+            svCanvas.width = Math.floor(rect.width * devicePixelRatio);
+            svCanvas.height = Math.floor(rect.height * devicePixelRatio);
+            svCanvas.style.width = rect.width + 'px';
+            svCanvas.style.height = rect.height + 'px';
+            svCtx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+            drawSV();
+        }
+        window.addEventListener('resize', fitCanvas);
+
+        /* draw SV square: gradient from white -> hue, and black gradient */
+        function drawSV() {
+            const w = svCanvas.width / devicePixelRatio;
+            const h = svCanvas.height / devicePixelRatio;
+            // base: hue color
+            const [r, g, b] = hsvToRgb(state.h, 100, 100);
+            svCtx.fillStyle = `rgb(${r},${g},${b})`;
+            svCtx.fillRect(0, 0, w, h);
+            // overlay white -> transparent (left->right)
+            let whiteGrad = svCtx.createLinearGradient(0, 0, w, 0);
+            whiteGrad.addColorStop(0, '#fff'); whiteGrad.addColorStop(1, 'rgba(255,255,255,0)');
+            svCtx.fillStyle = whiteGrad; svCtx.fillRect(0, 0, w, h);
+            // overlay transparent -> black (top->bottom)
+            let blackGrad = svCtx.createLinearGradient(0, 0, 0, h);
+            blackGrad.addColorStop(0, 'rgba(0,0,0,0)'); blackGrad.addColorStop(1, '#000');
+            svCtx.fillStyle = blackGrad; svCtx.fillRect(0, 0, w, h);
+
+            // draw indicator circle
+            let x = (state.s / 100) * w, y = (1 - state.v / 100) * h;
+            svCtx.beginPath(); svCtx.strokeStyle = 'white'; svCtx.lineWidth = 2; svCtx.arc(x, y, 8, 0, Math.PI * 2); svCtx.stroke();
+            svCtx.beginPath(); svCtx.strokeStyle = 'rgba(0,0,0,0.3)'; svCtx.lineWidth = 1; svCtx.arc(x, y, 9, 0, Math.PI * 2); svCtx.stroke();
+        }
+
+        /* update UI from state */
+        function updateUI() {
+            hueEl.value = state.h;
+            alphaEl.value = state.a;
+            alphaVal.textContent = state.a + '%';
+            const [r, g, b] = hsvToRgb(state.h, state.s, state.v);
+            const hex = rgbToHex(r, g, b);
+            const rgba = `rgba(${r}, ${g}, ${b}, ${(state.a / 100).toFixed(2)})`;
+            preview.style.background = rgba;
+            preview.textContent = hex;
+            hexInput.value = hex;
+            rgbaInput.value = rgba;
+            hsvInput.value = `hsv(${state.h}, ${state.s}%, ${state.v}%)`;
+            drawSV();
+        }
+
+        /* SV interactions */
+        let dragging = false;
+        function handlePointer(evt) {
+            const rect = svCanvas.getBoundingClientRect();
+            const x = Math.min(Math.max(0, (evt.clientX - rect.left)), rect.width);
+            const y = Math.min(Math.max(0, (evt.clientY - rect.top)), rect.height);
+            state.s = Math.round((x / rect.width) * 100);
+            state.v = Math.round((1 - (y / rect.height)) * 100);
+            updateUI();
+        }
+        svCanvas.addEventListener('mousedown', e => { dragging = true; handlePointer(e); });
+        window.addEventListener('mousemove', e => { if (dragging) { handlePointer(e); } });
+        window.addEventListener('mouseup', () => { dragging = false; });
+        svCanvas.addEventListener('touchstart', e => { dragging = true; handlePointer(e.touches[0]); }, { passive: false });
+        svCanvas.addEventListener('touchmove', e => { if (dragging) { handlePointer(e.touches[0]); } }, { passive: false });
+        svCanvas.addEventListener('touchend', () => { dragging = false; });
+
+        /* Hue & Alpha events */
+        hueEl.addEventListener('input', e => { state.h = +e.target.value; updateUI(); });
+        alphaEl.addEventListener('input', e => { state.a = +e.target.value; alphaVal.textContent = state.a + '%'; updateUI(); });
+
+        /* manual hex input */
+        hexInput.addEventListener('change', e => {
+            const rgb = hexToRgb(e.target.value.trim());
+            if (!rgb) { alert('Invalid HEX'); return; }
+            const [h, s, v] = rgbToHsv(...rgb);
+            state.h = h; state.s = s; state.v = v; updateUI();
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(hexInput.value);
+                copiedSpan.textContent = 'Yes'; alert("🎉 Your color value is copied!🎉"); setTimeout(() => copiedSpan.textContent = 'No', 1200);
+            } catch (err) { alert('Copy failed'); }
+        });
+
+        /* presets */
+        const presetColors = ['#FF6B6B', '#FFB86B', '#FFD36B', '#8CE99A', '#63C6FF', '#7C6CFF', '#D07AFF', '#FFC0CB', '#FFFFFF', '#000000'];
+        presetColors.forEach(hex => {
+            const d = document.createElement('div'); d.className = 'swatch'; d.style.background = hex; d.title = hex;
+            d.addEventListener('click', () => { const rgb = hexToRgb(hex); const [h, s, v] = rgbToHsv(...rgb); state.h = h; state.s = s; state.v = v; updateUI(); });
+            presets.appendChild(d);
+        });
+
+        /* random */
+        randomBtn.addEventListener('click', () => {
+            state.h = Math.floor(Math.random() * 360);
+            state.s = Math.floor(20 + Math.random() * 80);
+            state.v = Math.floor(30 + Math.random() * 70);
+            updateUI();
+        });
+
+        /* EyeDropper (optional) */
+        eyedropBtn.addEventListener('click', async () => {
+            if (!window.EyeDropper) { alert('EyeDropper API not supported in this browser'); return; }
+            try {
+                const eye = new EyeDropper();
+                const result = await eye.open();
+                const rgb = hexToRgb(result.sRGBHex);
+                const [h, s, v] = rgbToHsv(...rgb);
+                state.h = h; state.s = s; state.v = v; updateUI();
+            } catch (err) { /* user cancelled or not secure */ alert('Could not pick color: ' + err.message); }
+        });
+
+        /* initial */
+        fitCanvas();
+        updateUI();
+    </script>
+</body>
+
+</html>
