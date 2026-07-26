@@ -296,6 +296,4 @@ img {
     }
 
     .project-grid {
-        grid-template-columns: 1fr;
-    }
-}
+        grid-template-colum
